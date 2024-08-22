@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<body>
+  <form class="initform" method="post" accept-charset="utf-8">
+    <div class="from-group">
+        <label>输入内容</label>
+        <input class="form-control createContent" type="text" name="content" placeholder="Enter Todo" />
+    </div>
+    <div class="from-group" style="margin: 10px 0px;">
+        <button type="button" class="btn btn-info" onclick="ceateItem()">新增</button>
+    </div>
+</form>
+
+<button class="btn btn-default" id="btn" onclick="searchItem()">查询全部</button>
+<div class="content"></div>
+</body>
+<script>
+  //创建数据
+  function ceateItem() {
+      var obj = {};
+      obj.content = $('.createContent').val();
+      if (obj.content != '') {
+          $.post('http://localhost:3000/create', obj, function (res) {
+              console.log('新增成功');
+              searchItem();
+          })
+      } else {
+          alert('不能为空');
+      }
+  }
+  // 查询
+  function searchItem() {
+            $(".content").empty();
+            $.get('http://localhost:3000/search', function (res) {
+                console.log(res);
+                for (var i = 0; i < res.length; i++) {
+                    $(".content").append(`
+                     <div id="lists" class="alert alert-success" click="edit(event)" style="padding: 0;height: 50px;line-height: 50px;padding-left: 10px;">
+                     <p  style="width: 90%;display: inline-block;" id="${res[i]._id}" >${res[i].content}</p>
+                    <p class="pdelete" title="删除该数据" style=" display: inline-block;">
+                        <button type="button" class="close"><span aria-hidden="true" onclick="deleteItem()"  nodeValue="${res[i]._id}">×</span><span class="sr-only">Close</span></button>
+                    </p>
+                </div>
+                     `)
+                }
+            })
+        }
+        function deleteItem(){
+          
+        }
+</script>
+</html>
